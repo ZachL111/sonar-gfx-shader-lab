@@ -1,68 +1,40 @@
 # sonar-gfx-shader-lab
 
-`sonar-gfx-shader-lab` explores graphics in Dart. The repository keeps the core rule set compact, then surrounds it with examples that show how the decisions move.
+`sonar-gfx-shader-lab` explores graphics with a small Dart codebase and local fixtures. The technical goal is to design a Dart verification harness for shader systems, covering storage recovery, log and snapshot fixtures, and failure-oriented tests.
 
-## Sonar Gfx Shader Lab Notes
+## Why I Keep It Small
 
-The quickest review path is the verifier first, then the fixtures, then the operations note. That order makes it easy to see whether the code, data, and explanation still agree.
+I want this repository to be useful as a quick reading exercise: fixtures first, implementation second, verifier last.
 
-## Feature Notes
+## Sonar Gfx Shader Lab Review Notes
 
-- Includes extended examples for render inputs, including `recovery` and `degraded`.
-- Documents stable output tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-- Stores project constants and verification metadata in `metadata/project.json`.
-- Adds a repository audit script that checks structure before running the language verifier.
+The first comparison I would make is `geometry span` against `render budget` because it shows where the rule is most opinionated.
 
-## Why This Exists
+## Included Behavior
 
-I use this kind of project to make a rule visible before adding more machinery around it. The important part here is not the size of the codebase. It is that the input signals, scoring rule, fixture data, and expected output can all be checked in one sitting.
+- `fixtures/domain_review.csv` adds cases for geometry span and atlas pressure.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/sonar-gfx-shader-walkthrough.md` walks through the case spread.
+- The Dart code includes a review path for `geometry span` and `render budget`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Code Tour
+## Internal Model
 
-- `lib`: library code
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
+The repository has two validation layers: the original compact policy fixture and the domain review fixture. They are separate so one can change without hiding failures in the other.
 
-## Implementation Notes
+The added Dart path is deliberately direct, with fixtures doing most of the explaining.
 
-The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Dart project uses a small library and assertion script, avoiding package dependencies for verification.
-
-## Try It
+## Try It Locally
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Validation
 
-## Example Scenarios
+The same command runs the local verification path. The highest-scoring domain case is `baseline` at 183, which lands in `ship`. The most cautious case is `recovery` at 130, which lands in `watch`.
 
-`examples/extended_cases.csv` adds six named cases. I kept the names plain so failures are easy to read in a terminal: baseline, pressure, surge, degraded, recovery, and boundary.
+## Scope
 
-## Tests
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
-
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Boundaries
-
-The scoring model is simple by design. More domain-specific behavior should be added through explicit adapters or extra fixture classes rather than hidden constants.
-
-## Roadmap
-
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add one more graphics fixture that focuses on a malformed or borderline input.
-
-## Local Setup
-
-Use a normal shell with Dart available on `PATH`. The verifier is written as a PowerShell script because the portfolio was assembled on Windows.
+The repository is intentionally scoped to local checks. I would expand it by adding adversarial fixtures before adding features.
