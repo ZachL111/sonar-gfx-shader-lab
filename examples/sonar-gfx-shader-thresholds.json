@@ -1,0 +1,17 @@
+{
+  "repo": "sonar-gfx-shader-lab",
+  "thresholds": {
+    "signal": 2,
+    "slack": 2,
+    "confidence": 1,
+    "drag": 5,
+    "ship": 150,
+    "watch": 122
+  },
+  "terms": [
+    "geometry span",
+    "atlas pressure",
+    "shader drift",
+    "render budget"
+  ]
+}
